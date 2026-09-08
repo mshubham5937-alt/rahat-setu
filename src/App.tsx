@@ -4,7 +4,6 @@ import type { ReactElement } from 'react';
 import { RoleProvider } from './context/RoleContext';
 import { ProblemProvider } from './context/ProblemContext';
 import { NotificationProvider } from './context/NotificationContext';
-import { LanguageProvider } from './context/LanguageContext';
 import { RoleSelectPage } from './pages/role-select/RoleSelectPage';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { useRole } from './context/RoleContext';
@@ -38,8 +37,7 @@ function App() {
     <RoleProvider>
       <ProblemProvider>
         <NotificationProvider>
-          <LanguageProvider>
-            <BrowserRouter>
+          <BrowserRouter>
               <Suspense
                 fallback={
                   <div className="h-screen w-screen flex items-center justify-center bg-surface">
@@ -100,8 +98,7 @@ function App() {
                 </Routes>
               </Suspense>
             </BrowserRouter>
-          </LanguageProvider>
-        </NotificationProvider>
+          </NotificationProvider>
       </ProblemProvider>
     </RoleProvider>
   );

@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useRole } from '../../context/RoleContext';
 import { useNotifications } from '../../context/NotificationContext';
-import { useLanguage, type Lang } from '../../context/LanguageContext';
 import { cn } from '../../utils/cn';
 import { ROLE_CONFIG } from '../../data/demoData';
 import { MaterialIcon } from '../common/MaterialIcon';
@@ -12,13 +11,10 @@ import { offlineQueue, isOnline } from '../../services/persistence';
 export function TopBar() {
   const { currentRole } = useRole();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
-  const { t } = useLanguage();
   const [showNotifications, setShowNotifications] = useState(false);
   const [online, setOnline] = useState(isOnline());
   const [pendingSync, setPendingSync] = useState(0);
-  const [showLang, setShowLang] = useState(false);
   const location = useLocation();
-  const { lang, setLang } = useLanguage();
 
   useEffect(() => {
     const update = () => {
@@ -64,7 +60,7 @@ export function TopBar() {
       <div className="flex items-center gap-2">
         <MaterialIcon icon="menu" size={20} className="text-on-surface-variant cursor-pointer hover:text-on-surface" />
         <h1 className="font-headline-sm text-on-surface">{getPageTitle()}</h1>
-        <Badge variant="secondary" size="sm" icon="science">{t('prototype')}</Badge>
+        <Badge variant="secondary" size="sm" icon="science">Prototype</Badge>
       </div>
 
       <div className="flex items-center gap-2.5">
@@ -78,36 +74,10 @@ export function TopBar() {
           </button>
         )}
 
-        <div className="flex items-center gap-1.5 h-9 px-2.5 bg-surface-container-high rounded-full" title={t('record') ?? 'Record'}>
+        <div className="flex items-center gap-1.5 h-9 px-2.5 bg-surface-container-high rounded-full" title="Connection status">
           <span className={cn('w-2 h-2 rounded-full', online ? 'bg-success' : 'bg-warning')} />
           <span className="sr-only">{online ? 'online' : 'offline'}</span>
           <MaterialIcon icon={online ? 'cloud_done' : 'cloud_off'} size={15} className={online ? 'text-success' : 'text-warning'} />
-        </div>
-
-        <div className="relative">
-          <div
-            className="flex items-center gap-1.5 h-9 px-3 bg-surface-container-high rounded-full cursor-pointer hover:bg-surface-container-highest transition-colors"
-            onClick={() => setShowLang((v) => !v)}
-          >
-            <MaterialIcon icon="translate" size={17} className="text-on-surface-variant" />
-            <span className="text-label-md font-semibold text-on-surface uppercase">{lang}</span>
-          </div>
-          {showLang && (
-            <div className="absolute right-0 top-12 w-32 bg-surface-container-lowest border border-outline-variant/30 shadow-lg z-50 rounded-xl overflow-hidden">
-              {(Object.keys(dictShort) as Lang[]).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => { setLang(l); setShowLang(false); }}
-                  className={cn(
-                    'w-full px-4 py-2.5 text-left text-label-lg transition-colors',
-                    lang === l ? 'bg-secondary-fixed text-secondary font-bold' : 'hover:bg-surface-container-high'
-                  )}
-                >
-                  {dictShort[l]}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="relative">
@@ -172,9 +142,3 @@ export function TopBar() {
     </header>
   );
 }
-
-const dictShort: Record<Lang, string> = {
-  en: 'English',
-  hi: 'हिन्दी',
-  gu: 'ગુજરાતી',
-};

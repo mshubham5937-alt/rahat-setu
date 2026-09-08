@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface-bright: #f8f9ff;
+  --color-surface: #f8f9ff;
+  --color-surface-dim: #cbdbf5;
+  --color-surface-variant: #d3e4fe;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-surface-container-lowest: #ffffff;
+
+  --color-primary: #0B132B;
+  --color-primary-container: #131a33;
+  --color-primary-fixed: #dbe1ff;
+  --color-primary-fixed-dim: #bec5e5;
+
+  --color-secondary: #06B6D4;
+  --color-secondary-container: #39b8fd;
+  --color-secondary-fixed: #c9e6ff;
+  --color-secondary-fixed-dim: #89ceff;
+
+  --color-tertiary: #000000;
+  --color-tertiary-container: #410004;
+  --color-tertiary-fixed: #ffdad7;
+  --color-tertiary-fixed-dim: #ffb3ad;
+
+  --color-error: #BA1A1A;
+  --color-error-container: #ffdad6;
+  --color-warning: #F59E0B;
+  --color-success: #06B6D4;
+
+  --color-outline: #76767e;
+  --color-outline-variant: #c6c6ce;
+
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #45464d;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #7b83a0;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #004666;
+  --color-on-secondary-fixed: #001e2f;
+  --color-on-terminal: #ffffff;
+
+  --color-background: #f8f9ff;
+  --color-surface-tint: #565d79;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-headline: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Custom font utilities */
+  --font-display-lg: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-xl: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-lg: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-md: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-sm: 'Plus Jakarta Sans', sans-serif;
+  --font-body-lg: 'Inter', sans-serif;
+  --font-body-md: 'Inter', sans-serif;
+  --font-body-sm: 'Inter', sans-serif;
+  --font-label-lg: 'Inter', sans-serif;
+  --font-label-md: 'Inter', sans-serif;
+  --font-label-sm: 'Inter', sans-serif;
+  --font-data-metric: 'Plus Jakarta Sans', sans-serif;
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -0.03em;
+  --text-display-lg--font-weight: 800;
+
+  --text-headline-xl: 36px;
+  --text-headline-xl--line-height: 44px;
+  --text-headline-xl--letter-spacing: -0.02em;
+  --text-headline-xl--font-weight: 700;
+
+  --text-headline-lg: 28px;
+  --text-headline-lg--line-height: 36px;
+  --text-headline-lg--letter-spacing: -0.02em;
+  --text-headline-lg--font-weight: 700;
+
+  --text-headline-md: 22px;
+  --text-headline-md--line-height: 28px;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-md--font-weight: 600;
+
+  --text-headline-sm: 18px;
+  --text-headline-sm--line-height: 24px;
+  --text-headline-sm--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 26px;
+  --text-body-lg--letter-spacing: -0.01em;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 22px;
+
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 18px;
+
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 20px;
+  --text-label-lg--letter-spacing: 0.01em;
+  --text-label-lg--font-weight: 600;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-md--font-weight: 600;
+
+  --text-label-sm: 10px;
+  --text-label-sm--line-height: 14px;
+  --text-label-sm--letter-spacing: 0.06em;
+  --text-label-sm--font-weight: 700;
+
+  --text-data-metric: 32px;
+  --text-data-metric--line-height: 36px;
+  --text-data-metric--letter-spacing: -0.02em;
+  --text-data-metric--font-weight: 700;
+
+  --animate-siren: siren 1.4s ease-in-out infinite;
+  --animate-radar-rotate: radar-rotate 6s linear infinite;
+  --animate-pulse-subtle: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-ping-slow: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+  @keyframes siren {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.15); }
+  }
+
+  @keyframes radar-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-outline-variant);
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 22px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Material Symbols configuration */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  ::selection {
+    background-color: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+  }
+
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-secondary);
+    ring-offset-width: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-surface-container);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-outline-variant);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-outline);
+  }
+}
+
+@layer utilities {
+  .grid-bg {
+    background-size: 32px 32px;
+    background-image:
+      linear-gradient(to right, rgb(198 198 206 / 0.22) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(198 198 206 / 0.22) 1px, transparent 1px);
+  }
+
+  .gis-grid-mesh {
+    background-size: 32px 32px;
+    background-image:
+      linear-gradient(to right, rgb(203 219 245 / 0.25) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(203 219 245 / 0.25) 1px, transparent 1px);
+  }
+
+  .radar-sweep {
+    animation: var(--animate-radar-rotate);
+  }
+
+  .animate-siren {
+    animation: var(--animate-siren);
+  }
+
+  .pulse-urgent {
+    animation: var(--animate-pulse-subtle);
+  }
+
+  .animate-ping-slow {
+    animation: var(--animate-ping-slow);
+  }
+
+  .text-truncate-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .text-truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

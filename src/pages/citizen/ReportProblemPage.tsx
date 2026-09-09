@@ -20,44 +20,41 @@ import type { AIAnalysis } from '../../types';
 
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as ProblemCategory[];
 
+function MapEvents({ onSelect }: { onSelect: (loc: Location, coords: [number, number]) => void }) {
+  useMapEvents({
+    click(e) {
+      const loc: Location = {
+        latitude: Math.round(e.latlng.lat * 100000) / 100000,
+        longitude: Math.round(e.latlng.lng * 100000) / 100000,
+        city: 'Ahmedabad',
+        state: 'Gujarat',
+        address: 'Selected drop location',
+      };
+      onSelect(loc, [loc.latitude, loc.longitude]);
+    },
+    locationfound(e) {
+      const loc: Location = {
+        latitude: Math.round(e.latlng.lat * 100000) / 100000,
+        longitude: Math.round(e.latlng.lng * 100000) / 100000,
+        city: 'Ahmedabad',
+        state: 'Gujarat',
+        address: 'My current location',
+      };
+      onSelect(loc, [loc.latitude, loc.longitude]);
+    },
+  });
+  return null;
+}
+
 function LocationPicker({ onPick, initial }: { onPick: (loc: Location) => void; initial?: Location }) {
   const [pos, setPos] = useState<[number, number] | null>(
     initial ? [initial.latitude, initial.longitude] : null
   );
 
-  function ClickHandler() {
-    useMapEvents({
-      click(e) {
-        const loc: Location = {
-          latitude: Math.round(e.latlng.lat * 100000) / 100000,
-          longitude: Math.round(e.latlng.lng * 100000) / 100000,
-          city: 'Ahmedabad',
-          state: 'Gujarat',
-          address: 'Selected drop location',
-        };
-        setPos([loc.latitude, loc.longitude]);
-        onPick(loc);
-      },
-    });
-    return null;
-  }
-
-  function UseMyLocation() {
-    useMapEvents({
-      locationfound(e) {
-        const loc: Location = {
-          latitude: Math.round(e.latlng.lat * 100000) / 100000,
-          longitude: Math.round(e.latlng.lng * 100000) / 100000,
-          city: 'Ahmedabad',
-          state: 'Gujarat',
-          address: 'My current location',
-        };
-        setPos([loc.latitude, loc.longitude]);
-        onPick(loc);
-      },
-    });
-    return null;
-  }
+  const handleSelect = (loc: Location, coords: [number, number]) => {
+    setPos(coords);
+    onPick(loc);
+  };
 
   const icon = L.divIcon({
     className: '',
@@ -73,8 +70,7 @@ function LocationPicker({ onPick, initial }: { onPick: (loc: Location) => void; 
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <ClickHandler />
-        <UseMyLocation />
+        <MapEvents onSelect={handleSelect} />
         {pos && <Marker position={pos} icon={icon} />}
       </MapContainer>
       <button

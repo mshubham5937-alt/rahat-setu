@@ -4,14 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
+    "firebase": "^12.18.0",
     "idb": "^8.0.3",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.42.0",

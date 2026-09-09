@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRole } from '../../context/RoleContext';
 import { useNotifications } from '../../context/NotificationContext';
+import { useProblems } from '../../context/ProblemContext';
 import { cn } from '../../utils/cn';
 import { ROLE_CONFIG } from '../../data/demoData';
 import { MaterialIcon } from '../common/MaterialIcon';
@@ -11,6 +12,7 @@ import { offlineQueue, isOnline } from '../../services/persistence';
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { currentRole } = useRole();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { firestoreStatus, firestoreError } = useProblems();
   const [showNotifications, setShowNotifications] = useState(false);
   const [online, setOnline] = useState(isOnline());
   const [pendingSync, setPendingSync] = useState(0);
@@ -81,7 +83,43 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           </button>
         )}
 
-        <div className="flex items-center gap-1.5 h-9 px-2.5 bg-surface-container-high rounded-full" title="Connection status">
+        <div
+          className={cn(
+            'flex items-center gap-1.5 h-9 px-3 rounded-full text-label-sm font-semibold border transition-colors',
+            firestoreStatus === 'connected'
+              ? 'bg-secondary/10 text-secondary border-secondary/30'
+              : firestoreStatus === 'connecting'
+              ? 'bg-surface-container-high text-on-surface-variant border-outline-variant/30'
+              : 'bg-warning/10 text-warning border-warning/30'
+          )}
+          title={
+            firestoreStatus === 'connected'
+              ? 'Connected to Firestore (rahat-setu) — Real-time synchronization active'
+              : firestoreStatus === 'error'
+              ? `Firestore: ${firestoreError || 'check security rules'} (using offline cache)`
+              : 'Connecting to Firestore...'
+          }
+        >
+          <span
+            className={cn(
+              'w-2 h-2 rounded-full',
+              firestoreStatus === 'connected'
+                ? 'bg-secondary animate-pulse'
+                : firestoreStatus === 'error'
+                ? 'bg-warning'
+                : 'bg-outline-variant'
+            )}
+          />
+          <span className="hidden md:inline">
+            {firestoreStatus === 'connected'
+              ? 'Firestore Live'
+              : firestoreStatus === 'error'
+              ? 'Local Cache'
+              : 'Connecting…'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5 h-9 px-2.5 bg-surface-container-high rounded-full" title="Network status">
           <span className={cn('w-2 h-2 rounded-full', online ? 'bg-success' : 'bg-warning')} />
           <span className="sr-only">{online ? 'online' : 'offline'}</span>
           <MaterialIcon icon={online ? 'cloud_done' : 'cloud_off'} size={15} className={online ? 'text-success' : 'text-warning'} />

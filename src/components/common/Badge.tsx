@@ -15,7 +15,7 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  primary: 'bg-primary-container text-on-primary-container',
+  primary: 'bg-primary-container text-primary-fixed-dim',
   secondary: 'bg-secondary-container text-on-secondary-container',
   error: 'bg-error-container text-error',
   warning: 'bg-tertiary-fixed-dim/50 text-tertiary-container',

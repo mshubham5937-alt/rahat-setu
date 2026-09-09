@@ -23,7 +23,7 @@ export function LifecycleTracker({ currentStage, orientation = 'horizontal', cla
                 <div
                   className={cn(
                     'w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0 border-2 transition-all',
-                    isCompleted && 'bg-secondary text-white border-secondary',
+                    isCompleted && 'bg-secondary text-on-secondary-container border-secondary',
                     isCurrent && 'bg-primary-container text-on-primary-container border-secondary animate-siren',
                     isPending && 'bg-surface-container-high text-on-surface-variant border-outline-variant'
                   )}
@@ -78,7 +78,7 @@ export function LifecycleTracker({ currentStage, orientation = 'horizontal', cla
               <div
                 className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0 border-2 transition-all',
-                  isCompleted && 'bg-secondary text-white border-secondary',
+                  isCompleted && 'bg-secondary text-on-secondary-container border-secondary',
                   isCurrent && 'bg-primary-container text-on-primary-container border-secondary animate-siren',
                   isPending && 'bg-surface-container-high text-on-surface-variant border-outline-variant'
                 )}

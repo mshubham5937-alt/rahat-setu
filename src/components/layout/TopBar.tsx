@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRole } from '../../context/RoleContext';
 import { useNotifications } from '../../context/NotificationContext';
 import { cn } from '../../utils/cn';
@@ -8,13 +8,20 @@ import { Badge } from '../common/Badge';
 import { useState, useEffect } from 'react';
 import { offlineQueue, isOnline } from '../../services/persistence';
 
-export function TopBar() {
+export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { currentRole } = useRole();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const [showNotifications, setShowNotifications] = useState(false);
   const [online, setOnline] = useState(isOnline());
   const [pendingSync, setPendingSync] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleNotificationClick = (notif: { id: string; actionUrl?: string }) => {
+    markAsRead(notif.id);
+    setShowNotifications(false);
+    if (notif.actionUrl) navigate(notif.actionUrl);
+  };
 
   useEffect(() => {
     const update = () => {
@@ -58,7 +65,7 @@ export function TopBar() {
   return (
     <header className="h-14 border-b border-outline-variant/30 bg-surface-container-lowest flex items-center justify-between px-4 shrink-0">
       <div className="flex items-center gap-2">
-        <MaterialIcon icon="menu" size={20} className="text-on-surface-variant cursor-pointer hover:text-on-surface" />
+        <MaterialIcon icon="menu" size={20} className="text-on-surface-variant cursor-pointer hover:text-on-surface" onClick={onMenuClick} />
         <h1 className="font-headline-sm text-on-surface">{getPageTitle()}</h1>
         <Badge variant="secondary" size="sm" icon="science">Prototype</Badge>
       </div>
@@ -113,7 +120,7 @@ export function TopBar() {
                       !notif.read && 'bg-secondary-fixed/20'
                     )}
                     onClick={() => {
-                      markAsRead(notif.id);
+                      handleNotificationClick(notif);
                     }}
                   >
                     <div className="flex items-start gap-2">
@@ -135,7 +142,11 @@ export function TopBar() {
           )}
         </div>
 
-        <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center cursor-pointer">
+        <div
+          className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center cursor-pointer hover:bg-secondary/30 transition-colors"
+          title="Go to dashboard home"
+          onClick={() => currentRole && navigate(`/${currentRole}`)}
+        >
           <MaterialIcon icon="person" size={18} className="text-on-surface" />
         </div>
       </div>

@@ -93,14 +93,14 @@ export function CitizenDashboard() {
             <h3 className="font-headline-sm text-on-surface mb-4">Evidence Collected</h3>
             <div className="grid grid-cols-3 gap-2 mb-4">
               {DEMO_EVIDENCE.filter((e) => e.type === 'photo').map((ev) => (
-                <div key={ev.id} className="aspect-square bg-surface-container-high rounded-lg overflow-hidden relative group cursor-pointer">
+                <div key={ev.id} className="aspect-square bg-surface-container-high rounded-lg overflow-hidden relative group cursor-pointer" onClick={() => window.open(ev.url, '_blank', 'noopener')} title="Open full photo">
                   <img src={ev.url} alt={ev.caption} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
                     <MaterialIcon icon="zoom_in" size={20} className="text-white opacity-0 group-hover:opacity-100" />
                   </div>
                 </div>
               ))}
-              <div className="aspect-square bg-secondary-fixed/30 rounded-lg flex items-center justify-center cursor-pointer hover:bg-secondary-fixed/60 transition-colors">
+              <div className="aspect-square bg-secondary-fixed/30 rounded-lg flex items-center justify-center cursor-pointer hover:bg-secondary-fixed/60 transition-colors" onClick={() => navigate('/citizen/report/new')} title="Add photo evidence">
                 <MaterialIcon icon="add_a_photo" size={20} className="text-secondary" />
               </div>
             </div>

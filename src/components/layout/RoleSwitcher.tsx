@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useRole } from '../../context/RoleContext';
 import { cn } from '../../utils/cn';
-import { ROLE_CONFIG, DEMO_NOTIFICATIONS } from '../../data/demoData';
+import { ROLE_CONFIG } from '../../data/demoData';
 import { MaterialIcon } from '../common/MaterialIcon';
 import { Badge } from '../common/Badge';
 import type { Role } from '../../types';
@@ -11,7 +11,6 @@ const roleOrder: Role[] = ['citizen', 'university', 'industry', 'government'];
 export function RoleSwitcher() {
   const { currentRole, setCurrentRole, clearRole } = useRole();
   const navigate = useNavigate();
-  const unreadCount = DEMO_NOTIFICATIONS.filter((n) => !n.read).length;
 
   const handleRoleSwitch = (role: Role) => {
     setCurrentRole(role);
@@ -40,7 +39,7 @@ export function RoleSwitcher() {
                 className={cn(
                   'h-8 px-3 text-[11px] font-semibold uppercase tracking-wider rounded-full transition-all duration-200',
                   isActive
-                    ? 'bg-secondary text-on-primary shadow-md'
+                    ? 'bg-secondary text-on-secondary-container shadow-md'
                     : 'bg-transparent text-on-primary-container/60 hover:bg-surface-container-high/20 hover:text-on-primary-container'
                 )}
               >
@@ -50,20 +49,7 @@ export function RoleSwitcher() {
           })}
         </div>
 
-        <div className="flex items-center gap-2">
-          {unreadCount > 0 && (
-            <div className="relative">
-              <MaterialIcon icon="notifications" size={20} className="text-on-primary-container/60 cursor-pointer hover:text-on-primary-container" />
-              <span className="absolute -top-1 -right-1 bg-error text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                {unreadCount}
-              </span>
-            </div>
-          )}
-          <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center">
-            <MaterialIcon icon="person" size={18} className="text-on-primary-container" />
-          </div>
         </div>
-      </div>
     </div>
   );
 }

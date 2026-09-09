@@ -39,7 +39,7 @@ export function SosMonitorPage() {
         {nextToDeploy && (
           <button
             onClick={() => advanceStage(nextToDeploy.id)}
-            className="group flex items-center gap-2 px-4 h-11 rounded-xl bg-secondary text-white text-label-lg font-semibold hover:bg-secondary/90 transition-colors shadow-md"
+            className="group flex items-center gap-2 px-4 h-11 rounded-xl bg-secondary text-on-secondary-container text-label-lg font-semibold hover:bg-secondary/90 transition-colors shadow-md"
           >
             <MaterialIcon icon="rocket_launch" size={18} />
             Advance '{nextToDeploy.title.slice(0, 24)}' to next stage

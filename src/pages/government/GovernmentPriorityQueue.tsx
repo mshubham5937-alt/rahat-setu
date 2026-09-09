@@ -53,7 +53,7 @@ export function GovernmentPriorityQueue() {
             onClick={() => setTab(t)}
             className={cn(
               'px-4 h-8 rounded-full text-label-md font-semibold uppercase tracking-wide transition-colors',
-              tab === t ? 'bg-secondary text-white' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+              tab === t ? 'bg-secondary text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
             )}
           >
             {t === 'pending' ? `To Verify (${pending.length})` : t === 'verified' ? `Verified (${verified.length})` : 'All'}

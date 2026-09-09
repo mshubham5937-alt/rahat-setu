@@ -95,7 +95,7 @@ export function UniversityDashboard() {
                 </div>
               ))}
             </div>
-            <Button variant="primary" className="w-full" icon="rocket_launch" onClick={() => navigate(`/university/projects/${activeProject.id}`)}>
+            <Button variant="primary" className="w-full" icon="rocket_launch" onClick={() => navigate(`/university/challenges/${activeProject.problemId}`)}>
               Open R&D Hub
             </Button>
           </Card>

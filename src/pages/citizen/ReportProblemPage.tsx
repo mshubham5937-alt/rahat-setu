@@ -84,7 +84,7 @@ function LocationPicker({ onPick, initial }: { onPick: (loc: Location) => void; 
           setPos([loc.latitude, loc.longitude]);
           onPick(loc);
         })}
-        className="absolute bottom-3 right-3 z-[1000] h-9 px-3 rounded-full bg-secondary text-white text-label-md font-semibold shadow-lg flex items-center gap-1.5"
+        className="absolute bottom-3 right-3 z-[1000] h-9 px-3 rounded-full bg-secondary text-on-secondary-container text-label-md font-semibold shadow-lg flex items-center gap-1.5"
       >
         <span className="material-symbols-outlined text-[16px]">my_location</span>
         Use my location
@@ -207,7 +207,7 @@ export function ReportProblemPage() {
             <div
               className={cn(
                 'h-9 flex-1 rounded-lg flex items-center justify-center gap-1.5 text-label-md font-semibold transition-colors',
-                step >= n ? 'bg-secondary text-white' : 'bg-surface-container-high text-on-surface-variant'
+                step >= n ? 'bg-secondary text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'
               )}
             >
               <span className="material-symbols-outlined text-[16px]">
@@ -248,7 +248,7 @@ export function ReportProblemPage() {
                     className={cn(
                       'px-3 h-8 rounded-full text-body-sm font-semibold border transition-colors',
                       report.category === c
-                        ? 'bg-secondary text-white border-secondary'
+                        ? 'bg-secondary text-on-secondary-container border-secondary'
                         : 'bg-surface-container-high text-on-surface-variant border-outline-variant hover:border-secondary'
                     )}
                   >

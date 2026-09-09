@@ -14,7 +14,7 @@ export function ProblemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { currentRole } = useRole();
-  const { getProblemById, advanceStage } = useProblems();
+  const { getProblemById, advanceStage, updateProblemStatus } = useProblems();
   const { addManualNotification } = useNotifications();
 
   const problem = id ? getProblemById(id) : undefined;
@@ -31,6 +31,34 @@ export function ProblemDetailPage() {
       message: `${problem.title} moved to next lifecycle stage`,
       actionUrl: `/projects/${problem.id}`,
     });
+  };
+
+  const notifyAction = (title: string, message: string) => {
+    addManualNotification({ type: 'system', title, message });
+  };
+
+  const handleContactNgo = () => {
+    notifyAction('NGO Support Requested', `Support request sent to partner NGOs for "${problem.title}".`);
+  };
+
+  const handleAcceptAndFormTeam = () => {
+    notifyAction('Challenge Accepted', `"${problem.title}" accepted. Assemble your student team.`);
+    navigate('/university/teams');
+  };
+
+  const handleCommitContribution = () => {
+    notifyAction('Contribution Started', `Pledge capabilities for "${problem.title}" from the CSR Capabilities page.`);
+    navigate('/industry/capabilities');
+  };
+
+  const handleMarkVerified = () => {
+    updateProblemStatus(problem.id, 'verified');
+    notifyAction('Report Verified', `"${problem.title}" marked as verified by field authority.`);
+  };
+
+  const handleAllocateResources = () => {
+    notifyAction('Resources Allocated', `Resource allocation opened for "${problem.title}" in the project tracker.`);
+    navigate('/government/projects');
   };
 
   const roleLabel = currentRole ? currentRole.charAt(0).toUpperCase() + currentRole.slice(1) : '';
@@ -295,18 +323,18 @@ export function ProblemDetailPage() {
             <h3 className="font-headline-sm text-on-surface mb-3">Actions ({roleLabel})</h3>
             <div className="space-y-2">
               {currentRole === 'citizen' && (
-                <Button variant="outline" className="w-full" icon="support_agent">Contact NGO Support</Button>
+                <Button variant="outline" className="w-full" icon="support_agent" onClick={handleContactNgo}>Contact NGO Support</Button>
               )}
               {currentRole === 'university' && (
-                <Button variant="primary" className="w-full" icon="handshake">Accept & Form Team</Button>
+                <Button variant="primary" className="w-full" icon="handshake" onClick={handleAcceptAndFormTeam}>Accept & Form Team</Button>
               )}
               {currentRole === 'industry' && (
-                <Button variant="primary" className="w-full" icon="assignment_turned_in">Commit Contribution</Button>
+                <Button variant="primary" className="w-full" icon="assignment_turned_in" onClick={handleCommitContribution}>Commit Contribution</Button>
               )}
               {currentRole === 'government' && (
                 <>
-                  <Button variant="primary" className="w-full" icon="verified">Mark Verified</Button>
-                  <Button variant="outline" className="w-full" icon="account_balance_wallet">Allocate Resources</Button>
+                  <Button variant="primary" className="w-full" icon="verified" onClick={handleMarkVerified}>Mark Verified</Button>
+                  <Button variant="outline" className="w-full" icon="account_balance_wallet" onClick={handleAllocateResources}>Allocate Resources</Button>
                 </>
               )}
             </div>

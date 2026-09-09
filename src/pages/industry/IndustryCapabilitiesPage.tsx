@@ -81,7 +81,7 @@ export function IndustryCapabilitiesPage() {
             onClick={() => setCategory(c)}
             className={cn(
               'px-4 h-8 rounded-full text-label-md font-semibold uppercase tracking-wide transition-colors',
-              category === c ? 'bg-secondary text-white' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+              category === c ? 'bg-secondary text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
             )}
           >
             {c === 'all' ? 'All' : CATEGORY_META[c].label}

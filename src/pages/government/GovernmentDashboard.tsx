@@ -155,7 +155,7 @@ export function GovernmentDashboard() {
             <p className="font-headline-md text-on-surface mb-1">{activeProject.title}</p>
             <p className="text-body-sm text-on-surface-variant mb-4">{activeProject.universityName} • {activeProject.industryNames.join(', ')}</p>
             {activeProblem && <LifecycleTracker currentStage={activeProblem.currentStage} />}
-            <Button variant="primary" size="md" className="w-full mt-4" icon="insights" onClick={() => navigate(`/government/projects/${activeProject.id}`)}>
+            <Button variant="primary" size="md" className="w-full mt-4" icon="insights" onClick={() => navigate(`/government/problems/${activeProject.problemId}`)}>
               View Command Brief
             </Button>
           </Card>
@@ -166,7 +166,7 @@ export function GovernmentDashboard() {
       <Card className="p-0">
         <div className="p-4 flex items-center justify-between border-b border-outline-variant/20">
           <h3 className="font-headline-md text-on-surface">Cross-Sector Partner Matrix</h3>
-          <Button variant="secondary" size="sm" icon="handshake">Manage Partners</Button>
+          <Button variant="secondary" size="sm" icon="handshake" onClick={() => navigate('/government/projects')}>Manage Partners</Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant/20">
           {/* University Partners */}
@@ -259,7 +259,7 @@ export function GovernmentDashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-t border-outline-variant/20 hover:bg-surface-container-high/30 cursor-pointer transition-colors" onClick={() => navigate(`/government/projects/${activeProject.id}`)}>
+              <tr className="border-t border-outline-variant/20 hover:bg-surface-container-high/30 cursor-pointer transition-colors" onClick={() => navigate(`/government/problems/${activeProblem?.id ?? activeProject.problemId}`)}>
                 <td className="px-4 py-3">
                   <p className="text-label-lg text-on-surface text-truncate-1 max-w-[260px]">{activeProject.title}</p>
                 </td>

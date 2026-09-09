@@ -24,6 +24,17 @@ export function ProjectsPage({ role }: { role: Role }) {
 
   const projects = [DEMO_PROJECT];
 
+  const startCollaborationPath: string =
+    role === 'citizen'
+      ? '/citizen/report/new'
+      : role === 'university'
+        ? '/university/challenges'
+        : role === 'industry'
+          ? '/industry/opportunities'
+          : '/government/problems';
+
+  const lifecyclePath = `/projects/${linkedProblem?.id ?? DEMO_PROJECT.problemId}`;
+
   return (
     <div className="max-w-[1440px] mx-auto space-y-6">
       <div className="flex items-start justify-between">
@@ -33,7 +44,7 @@ export function ProjectsPage({ role }: { role: Role }) {
             {projects.length} project{projects.length > 1 ? 's' : ''} in flight • shared lifecycle across all roles
           </p>
         </div>
-        <Button variant="secondary" icon="add" onClick={() => navigate(role === 'citizen' ? '/citizen/report/new' : '/')}>
+        <Button variant="secondary" icon="add" onClick={() => navigate(startCollaborationPath)}>
           {role === 'citizen' ? 'Report a problem' : 'Start collaboration'}
         </Button>
       </div>
@@ -87,7 +98,7 @@ export function ProjectsPage({ role }: { role: Role }) {
                       <div key={ms.id} className="flex items-center gap-3 p-3 bg-surface-container-high/50 rounded-xl">
                         <div className={cn(
                           'w-8 h-8 rounded-full flex items-center justify-center shrink-0',
-                          ms.status === 'completed' ? 'bg-success text-white' : ms.status === 'in_progress' ? 'bg-secondary-fixed text-secondary' : 'bg-surface-container-highest text-on-surface-variant'
+                          ms.status === 'completed' ? 'bg-success text-on-secondary-container' : ms.status === 'in_progress' ? 'bg-secondary-fixed text-secondary' : 'bg-surface-container-highest text-on-surface-variant'
                         )}>
                           <MaterialIcon icon={ms.status === 'completed' ? 'check' : ms.status === 'in_progress' ? 'schedule' : 'pending'} size={18} />
                         </div>
@@ -122,7 +133,7 @@ export function ProjectsPage({ role }: { role: Role }) {
                       </div>
                     ))}
                   </div>
-                  <Button variant="outline" className="w-full mt-4" icon="open_in_new" onClick={() => navigate(`/projects/${project.id}`)}>
+                  <Button variant="outline" className="w-full mt-4" icon="open_in_new" onClick={() => navigate(lifecyclePath)}>
                     Open lifecycle
                   </Button>
                 </div>

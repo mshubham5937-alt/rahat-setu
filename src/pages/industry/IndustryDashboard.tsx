@@ -42,7 +42,7 @@ export function IndustryDashboard() {
               <h2 className="font-headline-md text-on-surface">My Committed Responsibilities</h2>
               <p className="text-body-sm text-on-surface-variant">Contributions matched to disaster challenges</p>
             </div>
-            <Button variant="secondary" size="sm" icon="link">Link Capability</Button>
+            <Button variant="secondary" size="sm" icon="link" onClick={() => navigate('/industry/capabilities')}>Link Capability</Button>
           </div>
           <div className="divide-y divide-outline-variant/10">
             {committed.map((match) => (
@@ -114,7 +114,7 @@ export function IndustryDashboard() {
                 </div>
               ))}
             </div>
-            <Button variant="primary" className="w-full" icon="radar" onClick={() => navigate(`/industry/projects/${activeProject.id}`)}>
+            <Button variant="primary" className="w-full" icon="radar" onClick={() => navigate(`/industry/opportunities/${activeProject.problemId}`)}>
               View Project
             </Button>
           </Card>
@@ -132,7 +132,7 @@ export function IndustryDashboard() {
                       <p className="text-body-sm text-on-surface-variant">{match.matchScore}% match</p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">Review</Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/industry/opportunities')}>Review</Button>
                 </div>
               ))}
             </div>

@@ -77,7 +77,7 @@ export function UniversityTeamsPage() {
             ))}
           </div>
 
-          <Button variant="secondary" className="w-full" icon="groups" onClick={() => navigate(`/university/projects/${DEMO_PROJECT.id}`)}>
+          <Button variant="secondary" className="w-full" icon="groups" onClick={() => navigate(`/university/challenges/${DEMO_PROJECT.problemId}`)}>
             Open project workspace
           </Button>
         </Card>

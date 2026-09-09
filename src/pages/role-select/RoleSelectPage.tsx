@@ -77,9 +77,9 @@ export function RoleSelectPage() {
                     'w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300',
                     role === 'government'
                       ? 'bg-primary-container group-hover:bg-primary group-hover:text-white'
-                      : 'bg-secondary-fixed group-hover:bg-secondary group-hover:text-white'
+                      : 'bg-secondary-fixed group-hover:bg-secondary group-hover:text-on-secondary-container'
                   )}>
-                    <MaterialIcon icon={icon} size={28} className={role === 'government' ? 'text-on-primary-container group-hover:text-white' : 'text-on-secondary-fixed group-hover:text-white'} />
+                    <MaterialIcon icon={icon} size={28} className={role === 'government' ? 'text-on-primary-container group-hover:text-white' : 'text-on-secondary-fixed group-hover:text-on-secondary-container'} />
                   </div>
 
                   <h3 className="font-headline-md text-on-surface mb-1">{config.label}</h3>

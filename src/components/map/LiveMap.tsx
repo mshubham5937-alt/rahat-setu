@@ -90,7 +90,7 @@ export function LiveMap({ problems: external, height = 480, focusId, onSelect }:
               className={cn(
                 'px-2 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide border transition-colors',
                 filter === sev
-                  ? 'bg-secondary text-white border-secondary'
+                  ? 'bg-secondary text-on-secondary-container border-secondary'
                   : 'bg-surface-container-high text-on-surface-variant border-outline-variant hover:border-secondary'
               )}
             >

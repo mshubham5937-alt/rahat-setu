@@ -82,7 +82,7 @@ export function SosMonitorPage() {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className={cn('w-2 h-2 rounded-full animate-pulse', p.priorityScore >= 95 ? 'bg-error' : 'bg-warning')} />
+                      <span className={cn('w-2 h-2 rounded-full', p.priorityScore >= 95 ? 'bg-error' : 'bg-warning')} />
                       <p className="text-label-lg text-on-surface text-truncate-1">{p.title}</p>
                     </div>
                     <span className="text-data-metric text-error text-[18px]">{p.priorityScore}</span>

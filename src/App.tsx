@@ -91,8 +91,11 @@ function App() {
                     <Route path="sos" element={<RequireRole role="government"><SosMonitorPage /></RequireRole>} />
                   </Route>
 
-                  {/* Shared project route */}
-                  <Route path="/projects/:id" element={<ProblemDetailPage />} />
+                  {/* Shared project and problem routes with full DashboardLayout */}
+                  <Route element={<RequireRole role="shared"><DashboardLayout /></RequireRole>}>
+                    <Route path="/projects/:id" element={<ProblemDetailPage />} />
+                    <Route path="/problems/:id" element={<ProblemDetailPage />} />
+                  </Route>
 
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

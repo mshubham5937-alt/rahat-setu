@@ -11,8 +11,6 @@ import {
   Cell,
   AreaChart,
   Area,
-  RadialBarChart,
-  RadialBar,
   Legend,
 } from 'recharts';
 import { useProblems } from '../../context/ProblemContext';
@@ -130,44 +128,6 @@ export function WeekTrendChart() {
           <Tooltip contentStyle={tooltipStyle} />
           <Area type="monotone" dataKey="reported" stroke="#06B6D4" strokeWidth={2} fill="url(#trendGrad)" dot={{ r: 3, fill: '#06B6D4' }} />
         </AreaChart>
-      </ResponsiveContainer>
-    </Card>
-  );
-}
-
-export function PipelineRadialChart() {
-  const { problems } = useProblems();
-
-  const stageCounts = {
-    reported: problems.filter((p) => p.currentStage === 1).length,
-    analyzed: problems.filter((p) => p.currentStage === 2).length,
-    verified: problems.filter((p) => p.currentStage === 3).length,
-    matched: problems.filter((p) => p.currentStage === 4).length,
-    active: problems.filter((p) => p.currentStage > 4 && p.currentStage < 8).length,
-    deployed: problems.filter((p) => p.currentStage >= 8).length,
-  };
-
-  const data = [
-    { name: 'Reported', value: stageCounts.reported, fill: '#89ceff' },
-    { name: 'Analyzed', value: stageCounts.analyzed, fill: '#06B6D4' },
-    { name: 'Verified', value: stageCounts.verified, fill: '#39b8fd' },
-    { name: 'Matched', value: stageCounts.matched, fill: '#7b83a0' },
-    { name: 'In Progress', value: stageCounts.active, fill: '#131a33' },
-    { name: 'Deployed', value: stageCounts.deployed, fill: '#0B132B' },
-  ];
-
-  return (
-    <Card>
-      <div className="flex items-center gap-2 mb-4">
-        <MaterialIcon icon="radar" size={20} className="text-secondary" />
-        <h3 className="font-headline-sm text-on-surface">Pipeline Health</h3>
-      </div>
-      <ResponsiveContainer width="100%" height={220}>
-        <RadialBarChart innerRadius="25%" outerRadius="100%" data={data} cx="50%" cy="50%" startAngle={90} endAngle={-270}>
-          <RadialBar dataKey="value" background={{ fill: '#e5eeff' }} cornerRadius={8} />
-          <Legend wrapperStyle={{ fontSize: 10 }} iconSize={8} />
-          <Tooltip contentStyle={tooltipStyle} />
-        </RadialBarChart>
       </ResponsiveContainer>
     </Card>
   );

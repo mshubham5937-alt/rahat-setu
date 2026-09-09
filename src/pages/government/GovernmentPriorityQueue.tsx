@@ -13,7 +13,7 @@ import type { Problem } from '../../types';
 
 export function GovernmentPriorityQueue() {
   const navigate = useNavigate();
-  const { problems, updateProblemStatus } = useProblems();
+  const { problems, updateProblemStatus, verifyProblem } = useProblems();
   const { addManualNotification } = useNotifications();
   const [tab, setTab] = useState<'pending' | 'verified' | 'full'>('pending');
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -24,7 +24,11 @@ export function GovernmentPriorityQueue() {
   const visible = tab === 'pending' ? pending : tab === 'verified' ? verified : sorted;
 
   const handleVerify = (p: Problem) => {
-    updateProblemStatus(p.id, 'verified');
+    verifyProblem(p.id, {
+      verifiedBy: 'State Disaster Management Authority (SDMA)',
+      assignedAgency: 'NDRF / SDRF Rapid Unit',
+      assignedOfficer: 'Officer on Duty (Emergency Ops)',
+    });
     addManualNotification({
       type: 'problem_verified',
       title: 'Verified by government',

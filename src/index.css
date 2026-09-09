@@ -118,24 +118,11 @@
   --text-data-metric--letter-spacing: -0.02em;
   --text-data-metric--font-weight: 700;
 
-  --animate-siren: siren 1.4s ease-in-out infinite;
   --animate-radar-rotate: radar-rotate 6s linear infinite;
-  --animate-pulse-subtle: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-ping-slow: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
-
-  @keyframes siren {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.15); }
-  }
 
   @keyframes radar-rotate {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-  }
-
-  @keyframes pulse-subtle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
   }
 }
 
@@ -216,18 +203,6 @@
 
   .radar-sweep {
     animation: var(--animate-radar-rotate);
-  }
-
-  .animate-siren {
-    animation: var(--animate-siren);
-  }
-
-  .pulse-urgent {
-    animation: var(--animate-pulse-subtle);
-  }
-
-  .animate-ping-slow {
-    animation: var(--animate-ping-slow);
   }
 
   .text-truncate-1 {

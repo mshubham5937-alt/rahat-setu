@@ -24,7 +24,7 @@ export function LifecycleTracker({ currentStage, orientation = 'horizontal', cla
                   className={cn(
                     'w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0 border-2 transition-all',
                     isCompleted && 'bg-secondary text-on-secondary-container border-secondary',
-                    isCurrent && 'bg-primary-container text-on-primary-container border-secondary animate-siren',
+                    isCurrent && 'bg-primary-container text-on-primary-container border-secondary',
                     isPending && 'bg-surface-container-high text-on-surface-variant border-outline-variant'
                   )}
                 >
@@ -53,7 +53,7 @@ export function LifecycleTracker({ currentStage, orientation = 'horizontal', cla
                 <p className="text-body-sm text-on-surface-variant">{description}</p>
                 {isCurrent && (
                   <span className="inline-flex items-center gap-1 text-secondary text-[10px] font-semibold mt-1 uppercase tracking-wider">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                     Active
                   </span>
                 )}
@@ -79,7 +79,7 @@ export function LifecycleTracker({ currentStage, orientation = 'horizontal', cla
                 className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0 border-2 transition-all',
                   isCompleted && 'bg-secondary text-on-secondary-container border-secondary',
-                  isCurrent && 'bg-primary-container text-on-primary-container border-secondary animate-siren',
+                  isCurrent && 'bg-primary-container text-on-primary-container border-secondary',
                   isPending && 'bg-surface-container-high text-on-surface-variant border-outline-variant'
                 )}
               >

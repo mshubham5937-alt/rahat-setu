@@ -101,7 +101,7 @@ export function RoleSelectPage() {
             <div className="flex items-center gap-2 mb-4">
               <span className="material-symbols-outlined text-secondary text-[20px]">radar</span>
               <h3 className="font-headline-sm text-on-primary-container">Live Status — Demo Simulation</h3>
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse ml-1" />
+              <span className="w-2 h-2 rounded-full bg-secondary ml-1" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>

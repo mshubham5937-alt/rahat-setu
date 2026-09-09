@@ -7,7 +7,7 @@ import { Badge } from '../../components/common/Badge';
 import { StatusChip } from '../../components/common/StatusChip';
 import { MaterialIcon } from '../../components/common/MaterialIcon';
 import { LifecycleTracker } from '../../components/problem/LifecycleTracker';
-import { PriorityDistributionChart, CategoryBreakdownChart, WeekTrendChart, PipelineRadialChart } from '../../components/dashboard/Charts';
+import { PriorityDistributionChart, CategoryBreakdownChart, WeekTrendChart } from '../../components/dashboard/Charts';
 import { DEMO_PROJECT, DEMO_INDUSTRY_MATCHES, CATEGORY_LABELS } from '../../data/demoData';
 
 export function GovernmentDashboard() {
@@ -66,11 +66,10 @@ export function GovernmentDashboard() {
       </div>
 
       {/* Analytics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <PriorityDistributionChart />
         <CategoryBreakdownChart />
         <WeekTrendChart />
-        <PipelineRadialChart />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -136,11 +135,11 @@ export function GovernmentDashboard() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-body-sm text-on-surface">
-                <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-secondary" />
                 <span>Paldi Underpass water level rising 0.3m/hr</span>
               </div>
               <div className="flex items-center gap-2 text-body-sm text-on-surface-variant">
-                <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-success" />
                 <span>AMC pump backup: operating at 70% capacity</span>
               </div>
             </div>

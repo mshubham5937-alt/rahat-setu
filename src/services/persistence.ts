@@ -46,19 +46,57 @@ export const storage = {
   async get<T>(store: 'problems' | 'projects' | 'notifications', key: string): Promise<T | undefined> {
     try {
       const db = await getDb();
-      return (await db.get(store, key)) as T | undefined;
+      const val = (await db.get(store, key)) as T | undefined;
+      if (val !== undefined) return val;
     } catch {
-      return undefined;
+      /* Fallback to localStorage */
     }
+
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const raw = window.localStorage.getItem(`rahatsetu_${store}_${key}`);
+        if (raw) return JSON.parse(raw) as T;
+      }
+    } catch {
+      /* ignore */
+    }
+
+    return undefined;
   },
 
   async getAll<T>(store: 'problems' | 'projects' | 'notifications'): Promise<T[]> {
     try {
       const db = await getDb();
-      return (await db.getAll(store)) as T[];
+      const list = (await db.getAll(store)) as T[];
+      if (list && list.length > 0) return list;
     } catch {
-      return [];
+      /* Fallback to localStorage */
     }
+
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const results: T[] = [];
+        const prefix = `rahatsetu_${store}_`;
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const k = window.localStorage.key(i);
+          if (k && k.startsWith(prefix)) {
+            const raw = window.localStorage.getItem(k);
+            if (raw) {
+              try {
+                results.push(JSON.parse(raw) as T);
+              } catch {
+                /* ignore */
+              }
+            }
+          }
+        }
+        if (results.length > 0) return results;
+      }
+    } catch {
+      /* ignore */
+    }
+
+    return [];
   },
 
   async set(store: 'problems' | 'projects' | 'notifications', key: string, value: unknown): Promise<void> {
@@ -66,7 +104,15 @@ export const storage = {
       const db = await getDb();
       await db.put(store, value, key);
     } catch {
-      // Fall back to in-memory only; never crash the app
+      /* IndexedDB write fallback */
+    }
+
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(`rahatsetu_${store}_${key}`, JSON.stringify(value));
+      }
+    } catch {
+      /* localStorage might be full or blocked */
     }
   },
 
@@ -77,12 +123,36 @@ export const storage = {
     } catch {
       /* ignore */
     }
+
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem(`rahatsetu_${store}_${key}`);
+      }
+    } catch {
+      /* ignore */
+    }
   },
 
   async clear(store: 'problems' | 'projects' | 'notifications'): Promise<void> {
     try {
       const db = await getDb();
       await db.clear(store);
+    } catch {
+      /* ignore */
+    }
+
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const prefix = `rahatsetu_${store}_`;
+        const toRemove: string[] = [];
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const k = window.localStorage.key(i);
+          if (k && k.startsWith(prefix)) {
+            toRemove.push(k);
+          }
+        }
+        toRemove.forEach((k) => window.localStorage.removeItem(k));
+      }
     } catch {
       /* ignore */
     }
@@ -145,7 +215,73 @@ export const offlineQueue = {
       /* ignore */
     }
   },
+
+  async clearAll(): Promise<void> {
+    try {
+      const db = await getDb();
+      await db.clear('offlineQueue');
+    } catch {
+      /* ignore */
+    }
+  },
 };
+
+export interface DatabaseHealthResult {
+  ok: boolean;
+  engine: string;
+  latencyMs: number;
+  problemsCount: number;
+  notificationsCount: number;
+  pendingSyncCount: number;
+  lastChecked: Date;
+  error?: string;
+}
+
+export async function testDatabaseHealth(): Promise<DatabaseHealthResult> {
+  const start = performance.now();
+  try {
+    const testKey = `__health_check_${Date.now()}`;
+    const testPayload = { check: 'ok', timestamp: Date.now() };
+
+    // Test Write
+    await storage.set('problems', testKey, testPayload);
+
+    // Test Read
+    const readBack = await storage.get<{ check: string }>('problems', testKey);
+
+    // Test Delete Cleanup
+    await storage.delete('problems', testKey);
+
+    const latencyMs = Math.round(performance.now() - start);
+    const problems = await storage.getAll('problems');
+    const notifications = await storage.getAll('notifications');
+    const pending = await offlineQueue.countPending();
+
+    const ok = Boolean(readBack && readBack.check === 'ok');
+
+    return {
+      ok,
+      engine: 'IndexedDB (rahatsetu) + LocalStorage Dual Layer',
+      latencyMs: Math.max(latencyMs, 1),
+      problemsCount: problems.length,
+      notificationsCount: notifications.length,
+      pendingSyncCount: pending,
+      lastChecked: new Date(),
+    };
+  } catch (err: unknown) {
+    const latencyMs = Math.round(performance.now() - start);
+    return {
+      ok: false,
+      engine: 'LocalStorage Mirror',
+      latencyMs,
+      problemsCount: 0,
+      notificationsCount: 0,
+      pendingSyncCount: 0,
+      lastChecked: new Date(),
+      error: err instanceof Error ? err.message : 'Database ping failure',
+    };
+  }
+}
 
 export function isOnline(): boolean {
   return typeof navigator !== 'undefined' ? navigator.onLine : true;

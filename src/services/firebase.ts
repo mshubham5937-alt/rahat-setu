@@ -10,6 +10,14 @@ import {
   type Unsubscribe,
 } from 'firebase/firestore';
 import type { Problem, Notification } from '../types';
+import { storage } from './persistence';
+
+export const isFirebaseConfigured = Boolean(
+  import.meta.env.VITE_FIREBASE_API_KEY &&
+  import.meta.env.VITE_FIREBASE_API_KEY !== 'AIzaSyBdNjtmkXB_giG7ruaK3hoBHfnO_yvtClM' &&
+  import.meta.env.VITE_FIREBASE_PROJECT_ID &&
+  import.meta.env.VITE_FIREBASE_PROJECT_ID !== 'rahat-setu'
+);
 
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBdNjtmkXB_giG7ruaK3hoBHfnO_yvtClM',
@@ -20,9 +28,39 @@ export const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:343606671773:web:1bc279075709f64a975774',
 };
 
-// Initialize Firebase App singleton
-export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+// Initialize Firebase App singleton only if configured
+export const app = isFirebaseConfigured
+  ? (getApps().length > 0 ? getApp() : initializeApp(firebaseConfig))
+  : null;
+export const db = app ? getFirestore(app) : null;
+
+// Local reactive event bus for storage synchronization
+type Listener<T> = (data: T) => void;
+const problemListeners = new Set<Listener<Problem[]>>();
+const notificationListeners = new Set<Listener<Notification[]>>();
+
+async function notifyProblemListeners() {
+  const problems = await storage.getAll<Problem>('problems');
+  problemListeners.forEach((fn) => {
+    try {
+      fn(problems);
+    } catch {
+      /* ignore */
+    }
+  });
+}
+
+async function notifyNotificationListeners() {
+  const notifs = await storage.getAll<Notification>('notifications');
+  notifs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  notificationListeners.forEach((fn) => {
+    try {
+      fn(notifs);
+    } catch {
+      /* ignore */
+    }
+  });
+}
 
 /**
  * Strips undefined fields and converts Dates to Firestore Timestamps
@@ -75,78 +113,124 @@ export function convertTimestamps<T>(obj: unknown): T {
 }
 
 /**
- * Firestore Problem API
+ * High-performance Firestore / Local Dual Database API
  */
 export const firestoreService = {
   async saveProblem(problem: Problem): Promise<void> {
-    const cleanData = sanitizeForFirestore(problem) as Record<string, unknown>;
-    const ref = doc(db, 'problems', problem.id);
-    await setDoc(ref, cleanData, { merge: true });
+    // Always persist to local dual-layer storage first
+    await storage.set('problems', problem.id, problem);
+    notifyProblemListeners();
+
+    if (isFirebaseConfigured && db) {
+      const cleanData = sanitizeForFirestore(problem) as Record<string, unknown>;
+      const ref = doc(db, 'problems', problem.id);
+      await setDoc(ref, cleanData, { merge: true });
+    }
   },
 
   async updateProblem(id: string, updates: Partial<Problem>): Promise<void> {
-    const cleanData = sanitizeForFirestore({ ...updates, updatedAt: new Date() }) as Record<string, unknown>;
-    const ref = doc(db, 'problems', id);
-    await setDoc(ref, cleanData, { merge: true });
+    const existing = await storage.get<Problem>('problems', id);
+    const updated = { ...(existing || {}), ...updates, id, updatedAt: new Date() } as Problem;
+    await storage.set('problems', id, updated);
+    notifyProblemListeners();
+
+    if (isFirebaseConfigured && db) {
+      const cleanData = sanitizeForFirestore({ ...updates, updatedAt: new Date() }) as Record<string, unknown>;
+      const ref = doc(db, 'problems', id);
+      await setDoc(ref, cleanData, { merge: true });
+    }
   },
 
   async getAllProblems(): Promise<Problem[]> {
-    const snap = await getDocs(collection(db, 'problems'));
-    return snap.docs.map((docSnap) => convertTimestamps<Problem>({ ...docSnap.data(), id: docSnap.id }));
+    if (isFirebaseConfigured && db) {
+      try {
+        const snap = await getDocs(collection(db, 'problems'));
+        const remote = snap.docs.map((docSnap) => convertTimestamps<Problem>({ ...docSnap.data(), id: docSnap.id }));
+        if (remote.length > 0) return remote;
+      } catch {
+        /* Fall back to local store */
+      }
+    }
+    return await storage.getAll<Problem>('problems');
   },
 
   subscribeToProblems(
     onSuccess: (problems: Problem[]) => void,
     onError?: (error: Error) => void
   ): Unsubscribe {
-    return onSnapshot(
-      collection(db, 'problems'),
-      (snap) => {
-        const list = snap.docs.map((d) => convertTimestamps<Problem>({ ...d.data(), id: d.id }));
-        onSuccess(list);
-      },
-      (err) => {
-        if (onError) onError(err);
-      }
-    );
+    if (isFirebaseConfigured && db) {
+      return onSnapshot(
+        collection(db, 'problems'),
+        (snap) => {
+          const list = snap.docs.map((d) => convertTimestamps<Problem>({ ...d.data(), id: d.id }));
+          onSuccess(list);
+        },
+        (err) => {
+          if (onError) onError(err);
+        }
+      );
+    }
+
+    // Local reactive subscription
+    problemListeners.add(onSuccess);
+    storage.getAll<Problem>('problems').then((items) => {
+      onSuccess(items);
+    });
+
+    return () => {
+      problemListeners.delete(onSuccess);
+    };
   },
 
   async seedDemoIfEmpty(demoProblems: Problem[]): Promise<boolean> {
-    try {
-      const snap = await getDocs(collection(db, 'problems'));
-      if (snap.empty) {
-        for (const p of demoProblems) {
-          await this.saveProblem(p);
-        }
-        return true;
+    const existing = await storage.getAll<Problem>('problems');
+    if (existing.length === 0) {
+      for (const p of demoProblems) {
+        await storage.set('problems', p.id, p);
       }
-      return false;
-    } catch {
-      return false;
+      notifyProblemListeners();
+      return true;
     }
+    return false;
   },
 
   async saveNotification(notification: Notification): Promise<void> {
-    const cleanData = sanitizeForFirestore(notification) as Record<string, unknown>;
-    const ref = doc(db, 'notifications', notification.id);
-    await setDoc(ref, cleanData, { merge: true });
+    await storage.set('notifications', notification.id, notification);
+    notifyNotificationListeners();
+
+    if (isFirebaseConfigured && db) {
+      const cleanData = sanitizeForFirestore(notification) as Record<string, unknown>;
+      const ref = doc(db, 'notifications', notification.id);
+      await setDoc(ref, cleanData, { merge: true });
+    }
   },
 
   subscribeToNotifications(
     onSuccess: (notifications: Notification[]) => void,
     onError?: (error: Error) => void
   ): Unsubscribe {
-    return onSnapshot(
-      collection(db, 'notifications'),
-      (snap) => {
-        const list = snap.docs.map((d) => convertTimestamps<Notification>({ ...d.data(), id: d.id }));
-        // Sort newest first
-        list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        onSuccess(list);
-      },
-      (err) => {
-        if (onError) onError(err);
-      }
-    );
+    if (isFirebaseConfigured && db) {
+      return onSnapshot(
+        collection(db, 'notifications'),
+        (snap) => {
+          const list = snap.docs.map((d) => convertTimestamps<Notification>({ ...d.data(), id: d.id }));
+          list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          onSuccess(list);
+        },
+        (err) => {
+          if (onError) onError(err);
+        }
+      );
+    }
+
+    notificationListeners.add(onSuccess);
+    storage.getAll<Notification>('notifications').then((items) => {
+      items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      onSuccess(items);
+    });
+
+    return () => {
+      notificationListeners.delete(onSuccess);
+    };
   },
 };

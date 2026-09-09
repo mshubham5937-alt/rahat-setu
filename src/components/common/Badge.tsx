@@ -34,7 +34,7 @@ export function Badge({
   variant = 'surface',
   size = 'md',
   dot = false,
-  pulse = false,
+  pulse: _pulse = false,
   icon,
   children,
   className,
@@ -50,9 +50,6 @@ export function Badge({
     >
       {dot && (
         <span className="relative flex h-2 w-2">
-          {pulse && (
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
-          )}
           <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
         </span>
       )}

@@ -91,16 +91,34 @@ export function ProblemProvider({ children }: { children: ReactNode }) {
   // Primary data subscription via Firestore with IndexedDB fallback
   useEffect(() => {
     let isSubscribed = true;
+    const DATA_VERSION = 'v4_realistic_disasters_2026';
 
     // Load local IndexedDB cache first for instant render
     (async () => {
       try {
+        const storedVersion = localStorage.getItem('rahatsetu_data_version');
+        if (storedVersion !== DATA_VERSION) {
+          localStorage.setItem('rahatsetu_data_version', DATA_VERSION);
+          await storage.clear('problems');
+          for (const p of DEMO_PROBLEMS) {
+            await storage.set('problems', p.id, p);
+          }
+          if (isSubscribed) {
+            setProblems(DEMO_PROBLEMS);
+          }
+          return;
+        }
+
         const cached = await storage.getAll<Problem>('problems');
         if (isSubscribed && cached && cached.length > 0) {
           setProblems((prev) => (prev && prev.length > 0 ? prev : cached));
+        } else if (isSubscribed) {
+          setProblems(DEMO_PROBLEMS);
         }
       } catch {
-        /* ignore */
+        if (isSubscribed) {
+          setProblems(DEMO_PROBLEMS);
+        }
       }
     })();
 

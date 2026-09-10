@@ -218,6 +218,7 @@ export function ProblemProvider({ children }: { children: ReactNode }) {
       setProblems((prev) =>
         (prev || []).map((p) => {
           if (p.id !== id) return p;
+          if (p.currentStage >= 9) return p;
           const nextStage = Math.min(p.currentStage + 1, 9) as LifecycleStage;
           const nextStatus = stageToStatus[nextStage] || p.status;
           updatedProblem = {

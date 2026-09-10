@@ -51,6 +51,7 @@ export function ProblemDetailPage() {
   const indNames = problem.industryMatches.length > 0 ? problem.industryMatches.map((m) => m.industryName).join(', ') : 'Reliance Foundation, Tata Consultancy Services';
   const govContact = problem.governmentVerification?.assignedAgency || 'Gujarat State Disaster Management Authority';
   const progressPercent = Math.min(100, Math.round((problem.currentStage / 9) * 100));
+  const isMaxStage = problem.currentStage >= 9;
 
   const notifyAction = (title: string, message: string) => {
     addManualNotification({
@@ -62,6 +63,10 @@ export function ProblemDetailPage() {
   };
 
   const handleAdvance = async () => {
+    if (isMaxStage) {
+      notifyAction('Lifecycle Complete', `${problem.title} is already at the final stage (Stage 9).`);
+      return;
+    }
     await advanceStage(problem.id);
     notifyAction('Stage Advanced', `${problem.title} transitioned to Stage ${Math.min(problem.currentStage + 1, 9)}.`);
   };
@@ -145,7 +150,13 @@ export function ProblemDetailPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <Button variant="primary" icon="forward" onClick={handleAdvance}>
+          <Button
+            variant="primary"
+            icon="forward"
+            onClick={handleAdvance}
+            disabled={isMaxStage}
+            title={isMaxStage ? 'Lifecycle complete — already at final stage' : 'Advance to next stage'}
+          >
             Advance Lifecycle
           </Button>
         </div>
